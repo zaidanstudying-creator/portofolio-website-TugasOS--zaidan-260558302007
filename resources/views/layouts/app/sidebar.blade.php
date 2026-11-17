@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        @include('partials.head')
+    </head>
+    <body class="min-h-screen bg-[#f7f4ec] text-[#171717]">
+        <flux:sidebar sticky collapsible="mobile" class="border-e-2 border-black bg-white">
+            <flux:sidebar.header>
+                <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
+                <flux:sidebar.collapse class="lg:hidden" />
+            </flux:sidebar.header>
+
+            <flux:sidebar.nav>
+                <flux:sidebar.group heading="TUGAS!OS" class="grid">
+                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Dashboard') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="check-circle" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>
+                        Tugas
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="calendar-days" :href="route('calendar')" :current="request()->routeIs('calendar')" wire:navigate>
+                        Kalender
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="folder" :href="route('files.index')" :current="request()->routeIs('files.*')" wire:navigate>
+                        File Vault
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="paper-airplane" :href="route('submissions.index')" :current="request()->routeIs('submissions.*')" wire:navigate>
+                        Pengumpulan
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="sparkles" :href="route('assistant')" :current="request()->routeIs('assistant')" wire:navigate>
+                        AI Assistant
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="arrow-path" :href="route('recurrence.index')" :current="request()->routeIs('recurrence.*')" wire:navigate>
+                        Tugas berulang
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="sparkles" :href="route('habits.index')" :current="request()->routeIs('habits.*')" wire:navigate>
+                        Habit Tracker
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="chart-bar" :href="route('analytics.index')" :current="request()->routeIs('analytics.*')" wire:navigate>
+                        Analytics
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="puzzle-piece" :href="route('integrations.index')" :current="request()->routeIs('integrations.*')" wire:navigate>
+                        Integrasi
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="academic-cap" :href="route('workspace')" :current="request()->routeIs('workspace')" wire:navigate>
+                        Ruang kerja
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+            </flux:sidebar.nav>
+
+            <flux:spacer />
+
+            <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
+        </flux:sidebar>
+
+        <!-- Mobile User Menu -->
+        <flux:header class="lg:hidden">
+            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+            <flux:spacer />
+
+            <flux:dropdown position="top" align="end">
+                <flux:profile
+                    :initials="auth()->user()->initials()"
+                    icon-trailing="chevron-down"
+                />
+
+                <flux:menu>
+                    <flux:menu.radio.group>
+                        <div class="p-0 text-sm font-normal">
+                            <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+                                <flux:avatar
+                                    :name="auth()->user()->name"
+                                    :initials="auth()->user()->initials()"
+                                />
+
+                                <div class="grid flex-1 text-start text-sm leading-tight">
+                                    <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
+                                    <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
+                                </div>
+                            </div>
+                        </div>
+                    </flux:menu.radio.group>
+
+                    <flux:menu.separator />
+
+                    <flux:menu.radio.group>
+                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
+                            {{ __('Settings') }}
+                        </flux:menu.item>
+                    </flux:menu.radio.group>
+
+                    <flux:menu.separator />
+
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <flux:menu.item
+                            as="button"
+                            type="submit"
+                            icon="arrow-right-start-on-rectangle"
+                            class="w-full cursor-pointer"
+                            data-test="logout-button"
+                        >
+                            {{ __('Log out') }}
+                        </flux:menu.item>
+                    </form>
+                </flux:menu>
+            </flux:dropdown>
+        </flux:header>
+
+        {{ $slot }}
+
+        @persist('toast')
+            <flux:toast.group>
+                <flux:toast />
+            </flux:toast.group>
+        @endpersist
+
+        @fluxScripts
+    </body>
+</html>
